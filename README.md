@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# Debouncing in React.JS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Check out this example showcasing the power of debouncing in React:
 
-## Available Scripts
+```jsx
+import React, { useState } from "react";
 
-In the project directory, you can run:
+const CheckDebouncingEffect = () => {
+  const [value, setValue] = useState("");
+  const [errorValue, setErrorValue] = useState("");
 
-### `yarn start`
+  const debounce = (func, delay) => {
+    let debounceTimer;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+  const update = debounce((e) => {
+    setValue(e.target.value);
+    if (!e.target.value) {
+      setErrorValue("Please enter something in the input field.");
+    } else {
+      setErrorValue("");
+    }
+  }, 1000);
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  return (
+    <div className="App">
+      <input type="text" onChange={(e) => { e.persist(); update(e); }} />
+      <p style={{ color: "red" }}>{errorValue}</p>
+    </div>
+  );
+};
 
-### `yarn test`
+export default CheckDebouncingEffect;
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Key Features:
+1. **Debouncing Function:** Delays input updates to enhance performance.
+2. **State Management:** Utilizes React's useState for handling input value and error messages.
+3. **Error Handling:** Displays a message if the input field is empty.
 
-### `yarn build`
+## Why Debouncing?
+- **Performance Boost:** Prevents rapid updates for a smoother user experience.
+- **Improved UX:** Ensures efficiency, especially in data-heavy applications.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## How It Works:
+1. User types in the input field.
+2. Debouncing delays the execution of the update logic.
+3. If the input is empty, an error message is displayed.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## About `e.persist()`:
+- **Purpose:** Ensures the synthetic event is not nullified.
+- **Use Case:** Vital when working with asynchronous functions, like debouncing.
+- **Result:** Preserves the event for delayed processing, preventing unexpected behavior.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
